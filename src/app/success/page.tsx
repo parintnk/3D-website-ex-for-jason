@@ -13,9 +13,19 @@ import Stripe from "stripe";
 import { Logo } from "@/components/Logo";
 import { FadeIn } from "@/components/FadeIn";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-07-30.basil",
-});
+export const dynamic = "force-dynamic";
+
+function createStripeClient() {
+  const apiKey = process.env.STRIPE_SECRET_KEY;
+
+  if (!apiKey) {
+    throw new Error("Missing STRIPE_SECRET_KEY");
+  }
+
+  return new Stripe(apiKey, {
+    apiVersion: "2025-07-30.basil",
+  });
+}
 
 export const metadata: Metadata = {
   title: "Order Confirmation | Vapor Keyboards",
@@ -64,7 +74,8 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
 
   // Fetch session details from Stripe
   try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const session =
+      await createStripeClient().checkout.sessions.retrieve(sessionId);
 
     const orderDetails = {
       sessionId: session.id,
