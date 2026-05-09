@@ -50,10 +50,22 @@ export type HeroProps = SliceComponentProps<Content.HeroSlice>;
  * Component for "Hero" Slices.
  */
 const Hero: FC<HeroProps> = ({ slice }) => {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+
+    const handleChange = () => setIsDesktop(mediaQuery.matches);
+    handleChange();
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
   useGSAP(() => {
     const mm = gsap.matchMedia();
 
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
+    mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
       const split = SplitText.create(".hero-heading", {
         type: "chars,lines",
         mask: "lines",
@@ -92,30 +104,39 @@ const Hero: FC<HeroProps> = ({ slice }) => {
     mm.add("(prefers-reduced-motion: reduce)", () => {
       gsap.set(".hero-heading, .hero-body", { opacity: 1 });
     });
+
+    mm.add("(max-width: 767px)", () => {
+      gsap.set(".hero-heading, .hero-body", { opacity: 1 });
+    });
   });
 
   return (
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="hero relative h-dvh text-white text-shadow-black/30 text-shadow-lg motion-safe:h-[300vh]"
+      className="hero relative h-[100svh] overflow-hidden bg-linear-to-b from-gray-950 via-[#0f172a] to-[#0b5975] text-white text-shadow-black/30 text-shadow-lg md:h-dvh md:overflow-visible md:motion-safe:h-[300vh]"
     >
-      <div className="hero-scene pointer-events-none sticky top-0 h-dvh w-full">
-        <Canvas shadows="soft">
-          <Scene />
-        </Canvas>
-      </div>
-      <LoaderWrapper />
+      {isDesktop && (
+        <>
+          <div className="hero-scene pointer-events-none sticky top-0 h-dvh w-full">
+            <Canvas shadows="soft">
+              <Scene />
+            </Canvas>
+          </div>
+          <LoaderWrapper />
+        </>
+      )}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/35 to-transparent md:hidden" />
       <div className="hero-content absolute inset-x-0 top-0 h-dvh">
         <Bounded
           fullWidth
-          className="absolute inset-x-0 top-18 md:top-24 md:left-[8vw]"
+          className="absolute inset-x-0 top-36 md:top-24 md:left-[8vw]"
         >
           <PrismicRichText
             field={slice.primary.heading}
             components={{
               heading1: ({ children }) => (
-                <h1 className="hero-heading font-black-slanted text-6xl leading-[0.8] uppercase sm:text-7xl lg:text-8xl">
+                <h1 className="hero-heading font-black-slanted text-5xl leading-[0.85] uppercase sm:text-7xl lg:text-8xl">
                   {children}
                 </h1>
               ),
@@ -125,7 +146,7 @@ const Hero: FC<HeroProps> = ({ slice }) => {
 
         <Bounded
           fullWidth
-          className="hero-body absolute inset-x-0 bottom-0 opacity-0 md:right-[8vw] md:left-auto"
+          className="hero-body absolute inset-x-0 bottom-8 opacity-0 md:right-[8vw] md:bottom-0 md:left-auto"
           innerClassName="flex flex-col gap-3"
         >
           <div className="max-w-md">
