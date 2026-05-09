@@ -12,25 +12,27 @@ import * as THREE from "three";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-function CameraController() {
+function CameraController({ mobile = false }: { mobile?: boolean }) {
   const { camera, size } = useThree();
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const targetRef = useRef(new THREE.Vector3(0, 0, 0));
-  const currentPositionRef = useRef(new THREE.Vector3(0, 0, 4));
+  const currentPositionRef = useRef(
+    new THREE.Vector3(0, mobile ? 0.35 : 0, mobile ? 5.8 : 4),
+  );
   const prefersReducedMotion =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const baseCameraPosition = {
     x: 0,
-    y: 0,
-    z: 4,
+    y: mobile ? 0.35 : 0,
+    z: mobile ? 5.8 : 4,
   };
 
   useFrame(() => {
     const mouse = mouseRef.current;
 
-    if (prefersReducedMotion) {
+    if (mobile || prefersReducedMotion) {
       camera.position.set(
         baseCameraPosition.x,
         baseCameraPosition.y,
@@ -56,7 +58,7 @@ function CameraController() {
   });
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (mobile || prefersReducedMotion) return;
 
     const handleMouseMove = (event: MouseEvent) => {
       mouseRef.current.x = event.clientX / size.width;
@@ -67,20 +69,27 @@ function CameraController() {
       window.addEventListener("mousemove", handleMouseMove);
       return () => window.removeEventListener("mousemove", handleMouseMove);
     }
-  }, [size]);
+  }, [mobile, prefersReducedMotion, size]);
 
   return null;
 }
 
-export function Scene() {
+export function Scene({ mobile = false }: { mobile?: boolean }) {
   const keyboardGroupRef = useRef<THREE.Group>(null);
   const keycapRef = useRef<THREE.Group>(null);
   const keyboardAnimationRef = useRef<KeyboardRefs>(null);
-  const [lightIntensityScaler, setLightIntensityScaler] = useState(0);
+  const [lightIntensityScaler, setLightIntensityScaler] = useState(
+    mobile ? 1 : 0,
+  );
 
-  const scalingFactor = window.innerWidth <= 500 ? 0.5 : 1;
+  const scalingFactor = mobile ? 0.58 : 1;
 
   useGSAP(() => {
+    if (mobile) {
+      setLightIntensityScaler(1);
+      return;
+    }
+
     const mm = gsap.matchMedia();
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
@@ -365,38 +374,68 @@ export function Scene() {
           }
         });
     });
-  });
+  }, [mobile]);
 
   return (
     <group>
-      <CameraController />
-      <PerspectiveCamera makeDefault position={[0, 0, 4]} fov={50} />
+      <CameraController mobile={mobile} />
+      <PerspectiveCamera
+        makeDefault
+        position={[0, mobile ? 0.35 : 0, mobile ? 5.8 : 4]}
+        fov={mobile ? 42 : 50}
+      />
 
       <group scale={scalingFactor}>
-        <group ref={keyboardGroupRef}>
+        <group
+          ref={keyboardGroupRef}
+          position={mobile ? [0, -0.85, 1.25] : [0, 0, 0]}
+          rotation={mobile ? [1.25, 0, 0] : [0, 0, 0]}
+        >
           <Keyboard scale={9} ref={keyboardAnimationRef} />
         </group>
 
-        <group ref={keycapRef}>
-          <Keycap position={[0, -0.4, 2.6]} rotation={[0, 2, 3]} texture={0} />
-          <Keycap position={[-1.4, 0, 2.3]} rotation={[3, 2, 1]} texture={1} />
-          <Keycap position={[-1.8, 1, 1.5]} rotation={[0, 1, 3]} texture={2} />
-          <Keycap position={[0, 1, 1]} rotation={[0, 4, 2]} texture={3} />
-          <Keycap position={[0.7, 0.9, 1.4]} rotation={[3, 2, 0]} texture={4} />
-          <Keycap
-            position={[1.3, -0.3, 2.3]}
-            rotation={[1, 2, 0]}
-            texture={5}
-          />
-          <Keycap position={[0, 1, 2]} rotation={[2, 2, 3]} texture={6} />
-          <Keycap position={[-0.7, 0.6, 2]} rotation={[1, 4, 0]} texture={7} />
-          <Keycap
-            position={[-0.77, 0.1, 2.8]}
-            rotation={[3, 2, 3]}
-            texture={8}
-          />
-          <Keycap position={[2, 0, 1]} rotation={[0, 0, 3]} texture={7} />
-        </group>
+        {!mobile && (
+          <group ref={keycapRef}>
+            <Keycap
+              position={[0, -0.4, 2.6]}
+              rotation={[0, 2, 3]}
+              texture={0}
+            />
+            <Keycap
+              position={[-1.4, 0, 2.3]}
+              rotation={[3, 2, 1]}
+              texture={1}
+            />
+            <Keycap
+              position={[-1.8, 1, 1.5]}
+              rotation={[0, 1, 3]}
+              texture={2}
+            />
+            <Keycap position={[0, 1, 1]} rotation={[0, 4, 2]} texture={3} />
+            <Keycap
+              position={[0.7, 0.9, 1.4]}
+              rotation={[3, 2, 0]}
+              texture={4}
+            />
+            <Keycap
+              position={[1.3, -0.3, 2.3]}
+              rotation={[1, 2, 0]}
+              texture={5}
+            />
+            <Keycap position={[0, 1, 2]} rotation={[2, 2, 3]} texture={6} />
+            <Keycap
+              position={[-0.7, 0.6, 2]}
+              rotation={[1, 4, 0]}
+              texture={7}
+            />
+            <Keycap
+              position={[-0.77, 0.1, 2.8]}
+              rotation={[3, 2, 3]}
+              texture={8}
+            />
+            <Keycap position={[2, 0, 1]} rotation={[0, 0, 3]} texture={7} />
+          </group>
+        )}
       </group>
 
       <Environment
@@ -405,8 +444,8 @@ export function Scene() {
       />
 
       <spotLight
-        position={[-2, 1.5, 3]}
-        intensity={30 * lightIntensityScaler}
+        position={mobile ? [0, 2.5, 4] : [-2, 1.5, 3]}
+        intensity={(mobile ? 22 : 30) * lightIntensityScaler}
         castShadow
         penumbra={0}
         shadow-bias={-0.0002}

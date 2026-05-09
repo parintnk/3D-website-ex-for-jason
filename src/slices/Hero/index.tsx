@@ -116,17 +116,19 @@ const Hero: FC<HeroProps> = ({ slice }) => {
       data-slice-variation={slice.variation}
       className="hero relative h-[100svh] overflow-hidden bg-linear-to-b from-gray-950 via-[#0f172a] to-[#0b5975] text-white text-shadow-black/30 text-shadow-lg md:h-dvh md:overflow-visible md:motion-safe:h-[300vh]"
     >
-      {isDesktop && (
-        <>
-          <div className="hero-scene pointer-events-none sticky top-0 h-dvh w-full">
-            <Canvas shadows="soft">
-              <Scene />
-            </Canvas>
-          </div>
-          <LoaderWrapper />
-        </>
+      <div className="hero-scene pointer-events-none absolute inset-0 h-[100svh] w-full md:sticky md:top-0 md:h-dvh">
+        <Canvas
+          dpr={isDesktop ? [1, 1.5] : [0.75, 1]}
+          gl={{ antialias: isDesktop, powerPreference: "high-performance" }}
+          shadows={isDesktop ? "soft" : false}
+        >
+          <Scene mobile={!isDesktop} />
+        </Canvas>
+      </div>
+      {isDesktop && <LoaderWrapper />}
+      {!isDesktop && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/55 to-transparent" />
       )}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/35 to-transparent md:hidden" />
       <div className="hero-content absolute inset-x-0 top-0 h-dvh">
         <Bounded
           fullWidth
