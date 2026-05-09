@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Roboto_Flex } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
@@ -12,11 +11,6 @@ const robotoFlex = Roboto_Flex({
   display: "swap",
   axes: ["wdth", "slnt", "opsz"],
 });
-
-export const metadata: Metadata = {
-  title: "Vapor Keyboards",
-  description: "Custom mechanical keyboards built around your workflow.",
-};
 
 export default function RootLayout({
   children,

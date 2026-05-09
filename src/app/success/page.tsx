@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import {
   LuCheck,
@@ -26,12 +25,6 @@ function createStripeClient() {
     apiVersion: "2025-07-30.basil",
   });
 }
-
-export const metadata: Metadata = {
-  title: "Order Confirmation | Vapor Keyboards",
-  description:
-    "Thank you for your purchase! Your order has been confirmed and is being processed.",
-};
 
 interface SuccessPageProps {
   searchParams: Promise<{ session_id?: string }>;
