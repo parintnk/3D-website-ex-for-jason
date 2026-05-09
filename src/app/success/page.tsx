@@ -18,7 +18,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 export const metadata: Metadata = {
-  title: "Order Confirmation | Nimbus Keyboards",
+  title: "Order Confirmation | Vapor Keyboards",
   description:
     "Thank you for your purchase! Your order has been confirmed and is being processed.",
 };
@@ -127,7 +127,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
 
               <div className="flex items-center justify-between border-b border-gray-100 py-3">
                 <span className="text-gray-600">Product:</span>
-                <span className="text-gray-900">Vapor75 Keyboard</span>
+                <span className="text-gray-900">Keyboard</span>
               </div>
 
               {orderDetails.amount && (

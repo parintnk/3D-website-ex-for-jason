@@ -39,7 +39,7 @@ export function Loader() {
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="h-12 w-auto"
+        className="hidden"
         fill="none"
         viewBox="0 0 1385 326"
       >

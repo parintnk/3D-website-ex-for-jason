@@ -89,7 +89,7 @@ export function Navbar() {
                     <NavbarLink
                       href="#buy-button"
                       title="Purchase"
-                      description="Order your Vapor75 now!"
+                      description="Order your keyboard now!"
                     />
                   </ul>
                 </nav>

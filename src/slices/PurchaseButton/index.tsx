@@ -10,7 +10,13 @@ import {
 import { Bounded } from "@/components/Bounded";
 import { FadeIn } from "@/components/FadeIn";
 import clsx from "clsx";
-import { LuChevronRight, LuLoader } from "react-icons/lu";
+import {
+  LuChevronRight,
+  LuGlobe,
+  LuLoader,
+  LuPackageCheck,
+  LuShieldCheck,
+} from "react-icons/lu";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { checkout } from "@/checkout";
@@ -87,46 +93,84 @@ const PurchaseButton: FC<PurchaseButtonProps> = ({ slice }) => {
     <Bounded
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
+      className="bg-[#f5f7f9]"
     >
       <FadeIn
-        className="relative mx-auto max-w-7xl px-4 text-center"
+        className="grid items-center gap-10 rounded-none py-8 md:grid-cols-[0.9fr_1.1fr] md:gap-16 md:py-14"
         targetChildren
       >
-        <p className="mb-6 text-xl font-medium text-gray-700 md:text-2xl">
-          {slice.primary.eyebrow}
-        </p>
+        <div>
+          <p className="mb-4 text-sm font-semibold tracking-[0.22em] text-[#01A7E1] uppercase">
+            {slice.primary.eyebrow}
+          </p>
 
-        <h2
-          id="buy-button"
-          className="font-bold-slanted mb-8 scroll-pt-6 text-5xl text-gray-900 uppercase md:text-7xl lg:text-8xl"
-        >
-          <PrismicText field={slice.primary.heading} />
-        </h2>
+          <h2
+            id="buy-button"
+            className="font-bold-slanted scroll-pt-6 text-5xl leading-[0.9] text-gray-950 uppercase md:text-7xl"
+          >
+            <PrismicText field={slice.primary.heading} />
+          </h2>
 
-        <button
-          ref={buttonRef}
-          onClick={handlePurchaseClick}
-          disabled={isPressed}
-          className={clsx(
-            "group relative w-full overflow-hidden rounded-full border-8 border-gray-900 bg-linear-to-r/oklch from-sky-300 to-sky-600 px-8 py-6 ease-out focus:ring-[24px] focus:ring-sky-500/50 focus:outline-none motion-safe:transition-all motion-safe:duration-300 md:border-[12px] md:px-20 md:py-16",
-            "hover:scale-105 hover:shadow-2xl hover:shadow-sky-500/40",
-            "active:scale-95",
-            isPressed
-              ? "scale-95 cursor-not-allowed opacity-80"
-              : "cursor-pointer",
-          )}
-        >
-          <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/40 to-transparent ease-out group-hover:translate-x-full motion-safe:transition-transform motion-safe:duration-1000" />
+          <div className="mt-7 max-w-xl text-base leading-7 text-gray-600 md:text-lg">
+            <PrismicRichText field={slice.primary.body} />
+          </div>
 
-          <div className="relative z-10 flex items-center justify-center gap-6 md:gap-8">
+          <ul className="mt-8 grid gap-3 text-sm font-medium text-gray-700 sm:grid-cols-3">
+            <li className="flex items-center gap-2">
+              <LuGlobe className="size-5 text-[#01A7E1]" />
+              Worldwide shipping
+            </li>
+            <li className="flex items-center gap-2">
+              <LuShieldCheck className="size-5 text-[#01A7E1]" />
+              30-day guarantee
+            </li>
+            <li className="flex items-center gap-2">
+              <LuPackageCheck className="size-5 text-[#01A7E1]" />
+              2-year warranty
+            </li>
+          </ul>
+        </div>
+
+        <div className="relative isolate overflow-hidden rounded-lg bg-gray-950 p-4 shadow-2xl shadow-sky-950/20 md:p-6">
+          <div className="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-[#01A7E1] via-[#FFA631] to-[#01A7E1]" />
+          <div className="mb-5 flex items-center justify-between gap-4 border-b border-white/10 pb-5">
+            <div>
+              <p className="text-sm font-medium text-gray-400">Vapor Keyboard</p>
+              <p className="font-bold-slanted text-3xl text-white uppercase md:text-5xl">
+                Ready to build
+              </p>
+            </div>
+            <div className="rounded bg-white px-3 py-2 text-right">
+              <p className="text-xs font-semibold text-gray-500 uppercase">
+                In stock
+              </p>
+              <p className="text-lg font-black text-gray-950">Now</p>
+            </div>
+          </div>
+
+          <button
+            ref={buttonRef}
+            onClick={handlePurchaseClick}
+            disabled={isPressed}
+            className={clsx(
+              "group relative flex w-full items-center justify-between overflow-hidden rounded bg-linear-to-r from-[#01A7E1] to-[#0196C9] px-5 py-5 text-left ease-out focus:ring-4 focus:ring-[#01A7E1]/40 focus:outline-none motion-safe:transition-all motion-safe:duration-300 md:px-7 md:py-6",
+              "hover:-translate-y-1 hover:shadow-xl hover:shadow-[#01A7E1]/25",
+              "active:translate-y-0",
+              isPressed
+                ? "cursor-not-allowed opacity-80"
+                : "cursor-pointer",
+            )}
+          >
+            <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/25 to-transparent ease-out group-hover:translate-x-full motion-safe:transition-transform motion-safe:duration-1000" />
+
             <span
               ref={textRef}
               style={{ "--wdth": 85, "--wght": 850 } as React.CSSProperties}
-              className="font-black-slanted text-4xl tracking-wide text-gray-900 uppercase group-hover:-translate-y-1 motion-safe:transition-transform motion-safe:duration-300 md:text-7xl lg:text-9xl"
+              className="font-black-slanted relative z-10 text-3xl text-white uppercase motion-safe:transition-transform motion-safe:duration-300 md:text-5xl"
             >
               {isPressed ? (
-                <span className="flex items-center gap-4 md:gap-6">
-                  <LuLoader className="size-12 animate-spin text-gray-900 md:size-16" />
+                <span className="flex items-center gap-3">
+                  <LuLoader className="size-8 animate-spin text-white" />
                   Loading...
                 </span>
               ) : (
@@ -135,15 +179,13 @@ const PurchaseButton: FC<PurchaseButtonProps> = ({ slice }) => {
             </span>
 
             {!isPressed && (
-              <div className="hidden group-hover:translate-x-2 group-hover:scale-125 motion-safe:transition-all motion-safe:duration-300 md:block">
-                <LuChevronRight className="size-12 text-gray-900 md:size-16" />
-              </div>
+              <LuChevronRight className="relative z-10 size-9 text-white group-hover:translate-x-1 motion-safe:transition-transform" />
             )}
-          </div>
-        </button>
+          </button>
 
-        <div className="mt-12 space-y-3 text-base text-gray-600 md:text-lg">
-          <PrismicRichText field={slice.primary.body} />
+          <p className="mt-4 text-sm leading-6 text-gray-400">
+            Secure checkout opens in a new Stripe session.
+          </p>
         </div>
       </FadeIn>
     </Bounded>
